@@ -32,12 +32,18 @@ func main() {
 		// Implementation Dependency Injection
 		// Repository
 		userRepository repository.UserRepository = repository.NewUserRepository(db)
+		eventRepository repository.EventRepository = repository.NewEventRepository(db)
+		participantRepository repository.ParticipantRepository = repository.NewParticipantRepository(db)
 
 		// Service
 		userService service.UserService = service.NewUserService(userRepository, jwtService)
+		eventService service.EventService = service.NewEventService(eventRepository)
+		participantService service.ParticipantService = service.NewParticipantService(participantRepository)
 
 		// Controller
 		userController controller.UserController = controller.NewUserController(userService)
+		eventController controller.EventController = controller.NewEventController(eventService)
+		participantController controller.ParticipantController = controller.NewParticipantController(participantService)
 	)
 
 	server := gin.Default()
@@ -45,6 +51,8 @@ func main() {
 
 	// routes
 	routes.User(server, userController, jwtService)
+	routes.Event(server, eventController)
+	routes.Participant(server, participantController)
 
 	server.Static("/assets", "./assets")
 	port := os.Getenv("PORT")

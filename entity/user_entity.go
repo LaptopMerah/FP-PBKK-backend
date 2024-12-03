@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	ID         uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
+	ID         uuid.UUID `gorm:"type:uuid;primary_key;" json:"id"`
 	Name       string    `json:"name"`
 	TelpNumber string    `json:"telp_number"`
 	Email      string    `json:"email"`
@@ -27,7 +27,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	}()
 
 	var err error
-	// u.ID = uuid.New()
+	u.ID = uuid.New()
 	u.Password, err = helpers.HashPassword(u.Password)
 	if err != nil {
 		return err
