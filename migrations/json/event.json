@@ -1,0 +1,20 @@
+[
+  {
+    "event_name": "Schematics ITS 2024",
+    "date": "2024-08-17",
+    "location": "ITS Surabaya",
+    "details": "Schematics ITS 2024 is an annual event held by Schematics ITS. This event is a place for students to showcase their projects and compete with each other. This year's theme is 'Innovative Technology for a Better Future'."
+  },
+  {
+    "event_name": "Hacktoberfest 2021",
+    "date": "2021-10-01",
+    "location": "Online",
+    "details": "Hacktoberfest is an annual event held by DigitalOcean. This event is a month-long celebration of open-source software. Participants are required to make 4 pull requests to any public repository on GitHub to get a limited edition T-shirt."
+  },
+  {
+    "event_name": "Google I/O 2021",
+    "date": "2021-05-18",
+    "location": "Online",
+    "details": "Google I/O is an annual developer conference held by Google. This event is a place for developers to learn about Google's latest products and technologies. This year's event will be held online due to the COVID-19 pandemic."
+  }
+]
