@@ -11,6 +11,7 @@ type (
 	ParticipantRepository interface {
 		Create(ctx context.Context, participant entity.Participant) (entity.Participant, error)
 		FindAll(ctx context.Context) ([]entity.Participant, error)
+		FindAllByEventID(ctx context.Context, eventID uint) ([]entity.Participant, error)
 		FindByID(ctx context.Context, id uint) (entity.Participant, error)
 		Update(ctx context.Context, id uint, participant entity.Participant) (entity.Participant, error)
 		Delete(ctx context.Context, id uint) error
@@ -26,7 +27,6 @@ func NewParticipantRepository(db *gorm.DB) ParticipantRepository {
 		db: db,
 	}
 }
-
 
 func (r *participantRepository) Create(ctx context.Context, participant entity.Participant) (entity.Participant, error) {
 	err := r.db.Create(&participant).Error
@@ -47,6 +47,16 @@ func (r *participantRepository) FindAll(ctx context.Context) ([]entity.Participa
 	return participants, nil
 }
 
+func (r *participantRepository) FindAllByEventID(ctx context.Context, eventID uint) ([]entity.Participant, error) {
+	var participants []entity.Participant
+	err := r.db.Where("event_id = ?", eventID).Find(&participants).Error
+	if err != nil {
+		return []entity.Participant{}, err
+	}
+
+	return participants, nil
+}
+
 func (r *participantRepository) FindByID(ctx context.Context, id uint) (entity.Participant, error) {
 	var participant entity.Participant
 	err := r.db.Where("id = ?", id).First(&participant).Error
@@ -58,17 +68,15 @@ func (r *participantRepository) FindByID(ctx context.Context, id uint) (entity.P
 }
 
 func (r *participantRepository) Update(ctx context.Context, id uint, participant entity.Participant) (entity.Participant, error) {
-    err := r.db.Model(&entity.Participant{}).Where("id = ?", id).Updates(&participant).Error
-    if err != nil {
-        return entity.Participant{}, err
-    }
+	err := r.db.Model(&entity.Participant{}).Where("id = ?", id).Updates(&participant).Error
+	if err != nil {
+		return entity.Participant{}, err
+	}
 
 	var updatedParticipant entity.Participant
 	r.db.First(&updatedParticipant, id)
 	return updatedParticipant, nil
 }
-
-
 
 func (r *participantRepository) Delete(ctx context.Context, id uint) error {
 	err := r.db.Where("id = ?", id).First(&entity.Participant{}).Error

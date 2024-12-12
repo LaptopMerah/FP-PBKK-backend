@@ -14,6 +14,7 @@ type (
 	ParticipantController interface {
 		CreateParticipant(ctx *gin.Context)
 		GetAllParticipants(ctx *gin.Context)
+		GetAllParticipantsByEventID(ctx *gin.Context)
 		GetParticipantByID(ctx *gin.Context)
 		UpdateParticipant(ctx *gin.Context)
 		DeleteParticipant(ctx *gin.Context)
@@ -51,6 +52,25 @@ func (c *participantController) CreateParticipant(ctx *gin.Context) {
 
 func (c *participantController) GetAllParticipants(ctx *gin.Context) {
 	result, err := c.participantService.GetAllParticipants(ctx.Request.Context())
+	if err != nil {
+		res := utils.BuildResponseFailed("Failed to get events", err.Error(), nil)
+		ctx.JSON(http.StatusInternalServerError, res)
+		return
+	}
+
+	res := utils.BuildResponseSuccess("Participants retrieved successfully", result)
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (c *participantController) GetAllParticipantsByEventID(ctx *gin.Context) {
+	idStr := ctx.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		res := utils.BuildResponseFailed("Invalid event ID", err.Error(), nil)
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+	result, err := c.participantService.GetAllParticipantsByEventID(ctx.Request.Context(), uint(id))
 	if err != nil {
 		res := utils.BuildResponseFailed("Failed to get events", err.Error(), nil)
 		ctx.JSON(http.StatusInternalServerError, res)

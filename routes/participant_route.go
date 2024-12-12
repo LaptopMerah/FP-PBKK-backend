@@ -11,6 +11,7 @@ func Participant(route *gin.Engine, participantController controller.Participant
 		routes.POST("/", participantController.CreateParticipant)
 		routes.GET("/", participantController.GetAllParticipants)
 		routes.GET("/:id", participantController.GetParticipantByID)
+		routes.GET("/event/:id", participantController.GetAllParticipantsByEventID)
 		routes.PATCH("/:id", participantController.UpdateParticipant)
 		routes.DELETE("/:id", participantController.DeleteParticipant)
 	}

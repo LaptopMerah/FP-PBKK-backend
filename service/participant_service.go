@@ -13,6 +13,7 @@ type (
 	ParticipantService interface {
 		CreateParticipant(ctx context.Context, req dto.ParticipantCreateRequest) (dto.ParticipantResponse, error)
 		GetAllParticipants(ctx context.Context) ([]dto.ParticipantResponse, error)
+		GetAllParticipantsByEventID(ctx context.Context, eventID uint) ([]dto.ParticipantResponse, error)
 		GetParticipantByID(ctx context.Context, id uint) (dto.ParticipantResponse, error)
 		UpdateParticipant(ctx context.Context, id uint, req dto.ParticipantUpdateRequest) (dto.ParticipantResponse, error)
 		DeleteParticipant(ctx context.Context, id uint) error
@@ -51,6 +52,25 @@ func (s *participantService) CreateParticipant (ctx context.Context, req dto.Par
 
 func (s *participantService) GetAllParticipants(ctx context.Context) ([]dto.ParticipantResponse, error) {
 	participants, err := s.participantRepo.FindAll(ctx)
+	if err != nil {
+		return []dto.ParticipantResponse{}, err
+	}
+
+	var participantResponses []dto.ParticipantResponse
+	for _, participant := range participants {
+		participantResponses = append(participantResponses, dto.ParticipantResponse{
+			ID:			participant.ID,
+			EventID:	participant.EventID,
+			Name:		participant.Name,
+			Email:		participant.Email,
+		})
+	}
+
+	return participantResponses, nil
+}
+
+func (s *participantService) GetAllParticipantsByEventID(ctx context.Context, eventID uint) ([]dto.ParticipantResponse, error) {
+	participants, err := s.participantRepo.FindAllByEventID(ctx, eventID)
 	if err != nil {
 		return []dto.ParticipantResponse{}, err
 	}
