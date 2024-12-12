@@ -19,10 +19,11 @@ type ParticipantCreateRequest struct {
 }
 
 type ParticipantResponse struct {
-	ID      uint   `json:"id"`
-	EventID uint   `json:"event_id"`
-	Name    string `json:"name"`
-	Email   string `json:"email"`
+	ID        uint   `json:"id"`
+	EventID   uint   `json:"event_id"`
+	EventName string `json:"event_name"`
+	Name      string `json:"name"`
+	Email     string `json:"email"`
 }
 
 type ParticipantUpdateRequest struct {

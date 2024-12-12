@@ -30,11 +30,11 @@ func NewParticipantService(er repository.ParticipantRepository) ParticipantServi
 	}
 }
 
-func (s *participantService) CreateParticipant (ctx context.Context, req dto.ParticipantCreateRequest) (dto.ParticipantResponse , error) {
+func (s *participantService) CreateParticipant(ctx context.Context, req dto.ParticipantCreateRequest) (dto.ParticipantResponse, error) {
 	participant := entity.Participant{
-		EventID:	req.EventID,
-		Name:		req.Name,
-		Email:		req.Email,
+		EventID: req.EventID,
+		Name:    req.Name,
+		Email:   req.Email,
 	}
 
 	createdParticipant, err := s.participantRepo.Create(ctx, participant)
@@ -43,10 +43,10 @@ func (s *participantService) CreateParticipant (ctx context.Context, req dto.Par
 	}
 
 	return dto.ParticipantResponse{
-		ID:			createdParticipant.ID,
-		EventID:	createdParticipant.EventID,
-		Name:		createdParticipant.Name,
-		Email:		createdParticipant.Email,
+		ID:      createdParticipant.ID,
+		EventID: createdParticipant.EventID,
+		Name:    createdParticipant.Name,
+		Email:   createdParticipant.Email,
 	}, nil
 }
 
@@ -59,10 +59,11 @@ func (s *participantService) GetAllParticipants(ctx context.Context) ([]dto.Part
 	var participantResponses []dto.ParticipantResponse
 	for _, participant := range participants {
 		participantResponses = append(participantResponses, dto.ParticipantResponse{
-			ID:			participant.ID,
-			EventID:	participant.EventID,
-			Name:		participant.Name,
-			Email:		participant.Email,
+			ID:        participant.ID,
+			EventID:   participant.EventID,
+			EventName: participant.EventName,
+			Name:      participant.Name,
+			Email:     participant.Email,
 		})
 	}
 
@@ -78,10 +79,10 @@ func (s *participantService) GetAllParticipantsByEventID(ctx context.Context, ev
 	var participantResponses []dto.ParticipantResponse
 	for _, participant := range participants {
 		participantResponses = append(participantResponses, dto.ParticipantResponse{
-			ID:			participant.ID,
-			EventID:	participant.EventID,
-			Name:		participant.Name,
-			Email:		participant.Email,
+			ID:      participant.ID,
+			EventID: participant.EventID,
+			Name:    participant.Name,
+			Email:   participant.Email,
 		})
 	}
 
@@ -95,39 +96,38 @@ func (s *participantService) GetParticipantByID(ctx context.Context, id uint) (d
 	}
 
 	return dto.ParticipantResponse{
-		ID:			participant.ID,
-		EventID:	participant.EventID,
-		Name:		participant.Name,
-		Email:		participant.Email,
+		ID:      participant.ID,
+		EventID: participant.EventID,
+		Name:    participant.Name,
+		Email:   participant.Email,
 	}, nil
 }
 
 func (s *participantService) UpdateParticipant(ctx context.Context, id uint, req dto.ParticipantUpdateRequest) (dto.ParticipantResponse, error) {
-    existingParticipant, err := s.participantRepo.FindByID(ctx, id)
-    if err != nil {
-        return dto.ParticipantResponse{}, err
-    }
+	existingParticipant, err := s.participantRepo.FindByID(ctx, id)
+	if err != nil {
+		return dto.ParticipantResponse{}, err
+	}
 
-    participant := entity.Participant{
-        Model:   gorm.Model{ID: existingParticipant.ID, CreatedAt: existingParticipant.CreatedAt},
-        EventID: req.EventID,
-        Name:    req.Name,
-        Email:   req.Email,
-    }
+	participant := entity.Participant{
+		Model:   gorm.Model{ID: existingParticipant.ID, CreatedAt: existingParticipant.CreatedAt},
+		EventID: req.EventID,
+		Name:    req.Name,
+		Email:   req.Email,
+	}
 
-    updatedParticipant, err := s.participantRepo.Update(ctx, id, participant)
-    if err != nil {
-        return dto.ParticipantResponse{}, err
-    }
+	updatedParticipant, err := s.participantRepo.Update(ctx, id, participant)
+	if err != nil {
+		return dto.ParticipantResponse{}, err
+	}
 
-    return dto.ParticipantResponse{
-        ID:      updatedParticipant.ID,
-        EventID: updatedParticipant.EventID,
-        Name:    updatedParticipant.Name,
-        Email:   updatedParticipant.Email,
-    }, nil
+	return dto.ParticipantResponse{
+		ID:      updatedParticipant.ID,
+		EventID: updatedParticipant.EventID,
+		Name:    updatedParticipant.Name,
+		Email:   updatedParticipant.Email,
+	}, nil
 }
-
 
 func (s *participantService) DeleteParticipant(ctx context.Context, id uint) error {
 	err := s.participantRepo.Delete(ctx, id)

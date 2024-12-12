@@ -10,7 +10,10 @@ import (
 type (
 	ParticipantRepository interface {
 		Create(ctx context.Context, participant entity.Participant) (entity.Participant, error)
-		FindAll(ctx context.Context) ([]entity.Participant, error)
+		FindAll(ctx context.Context) ([]struct {
+			entity.Participant
+			EventName string `json:"event_name"`
+		}, error)
 		FindAllByEventID(ctx context.Context, eventID uint) ([]entity.Participant, error)
 		FindByID(ctx context.Context, id uint) (entity.Participant, error)
 		Update(ctx context.Context, id uint, participant entity.Participant) (entity.Participant, error)
@@ -36,12 +39,22 @@ func (r *participantRepository) Create(ctx context.Context, participant entity.P
 
 	return participant, nil
 }
+func (r *participantRepository) FindAll(ctx context.Context) ([]struct {
+	entity.Participant
+	EventName string `json:"event_name"`
+}, error) {
+	var participants []struct {
+		entity.Participant
+		EventName string `json:"event_name"`
+	}
 
-func (r *participantRepository) FindAll(ctx context.Context) ([]entity.Participant, error) {
-	var participants []entity.Participant
-	err := r.db.Find(&participants).Error
+	err := r.db.Table("participants").
+		Select("participants.*, events.event_name").
+		Joins("JOIN events ON events.id = participants.event_id").
+		Scan(&participants).Error
+
 	if err != nil {
-		return []entity.Participant{}, err
+		return nil, err
 	}
 
 	return participants, nil
